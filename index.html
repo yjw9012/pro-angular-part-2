@@ -6,10 +6,10 @@
     <link href="bootstrap-theme.css" rel="stylesheet"/>
     <script src="angular.js"></script>
     <script>
-        var myApp = angular.module("exampleApp", []);
+        const myApp = angular.module("exampleApp", []);
 
-        myApp.controller("dayCtrl", function ($scope) {
-            $scope.day = new Date().getDay();
+        myApp.controller("dayCtrl", function ($scope, days) {
+            $scope.day = days.today;
         });
 
         myApp.directive("highlight", function ($filter) {
@@ -23,11 +23,19 @@
         });
 
         myApp.filter("dayName", function () {
-            var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
             return function (input) {
                 return angular.isNumber(input) ? dayNames[input] : input;
             }
         });
+
+        const now = new Date();
+        myApp.value("nowVal", now);
+
+        myApp.service("days", function (nowVal) {
+            this.today = nowVal.getDay();
+        });
+
     </script>
 </head>
 <body>
