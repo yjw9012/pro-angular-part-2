@@ -17,20 +17,25 @@
 
             $scope.buttonNames = ["Red", "Green", "Blue"];
 
-            $scope.settings = {Rows: "Red", Columns: "Green"};
+            $scope.data = {rowColor: "Blue", columnColor: "Green"};
+
+            $scope.handleEvent = function (e) {
+                console.log("Event type: " + e.type);
+                $scope.data.columnColor = e.type == "mouseover" ? "Green" : "Blue";
+            }
         });
 
     </script>
     <style>
-        tr.Red {
+        Red {
             background-color: lightcoral;
         }
 
-        tr.Green {
+        Green {
             background-color: lightgreen;
         }
 
-        tr.Blue {
+        Blue {
             background-color: lightblue;
         }
     </style>
@@ -40,16 +45,12 @@
 <div id="todoPanel" class="panel" ng-controller="defaultCtrl">
     <h3 class="panel-header">To Do List</h3>
 
-    <div class="row well">
-        <div class="col-xs-6" ng-repeat="(key, val) in settings">
-            <h4>{{key}}</h4>
-            <div class="radio" ng-repeat="button in buttonNames">
-                <label>
-                    <input type="radio" ng-model="settings[key]" value="{{button}}">
-                    {{button}}
-                </label>
-            </div>
-        </div>
+    <div class="well">
+        <span ng-repeat="button in buttonNames">
+            <button class="btn btn-info" ng-click="data.rowColor = button">
+                {{button}}
+            </button>
+        </span>
     </div>
 
     <table class="table">
@@ -60,10 +61,12 @@
             <th>Done</th>
         </tr>
         </thead>
-        <tr ng-repeat="item in todos" ng-class-even="settings.Rows" ng-class-odd="settings.Columns">
+        <tr ng-repeat="item in todos" ng-class="data.rowColor"
+            ng-mouseenter="handleEvent($event)"
+            ng-mouseleave="handleEvent($event)">
             <td>{{$index + 1}}</td>
             <td>{{item.action}}</td>
-            <td>{{item.complete}}</td>
+            <td ng-class="data.columnColor">{{item.complete}}</td>
         </tr>
     </table>
 </div>
