@@ -5,29 +5,46 @@
     <script src="angular.js"></script>
     <link href="bootstrap.css" rel="stylesheet"/>
     <link href="bootstrap-theme.css" rel="stylesheet"/>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/sunny/jquery-ui.min.css">
     <script>
-        const app = angular.module("exampleApp", []);
-        app.controller("firstController", function () {
-            this.dataValue = "Hello, Adam";
-            this.reverseText = function () {
-                this.dataValue = this.dataValue.split("").reverse().join("");
-            }
+        $(document).ready(function () {
+            $('#jqui button').button().click(function (e) {
+                alert("jQuery UI Button was clicked");
+                angular.element(angularRegion).scope().$apply('handleClick()');
+            });
+        });
+
+        const app = angular.module("exampleApp", []).controller("simpleCtrl", function ($scope) {
+
+            $scope.buttonEnabled = true;
+            $scope.clickCounter = 0;
+
+            $scope.handleClick = function () {
+                $scope.clickCounter++;
+            };
+
+            $scope.$watch('buttonEnabled', function (newValue) {
+                $('#jqui button').button({disabled: !newValue});
+            });
         });
     </script>
 </head>
 <body>
-<div class="well" ng-controller="firstController as ctrl">
-    <h4>Top Level Controller</h4>
-    <div class="input-group">
-        <span class="input-group-btn">
-            <button class="btn btn-default"
-                    type="button"
-                    ng-click="ctrl.reverseText()">
-                Reverse
-            </button>
-        </span>
-        <input class="form-control" ng-model="ctrl.dataValue">
+    <div id="angularRegion" class="well" ng-controller="simpleCtrl">
+        <h4>AngularJS</h4>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="buttonEnabled">
+                Enable Button
+            </label>
+        </div>
+        Click counter: {{clickCounter}}
     </div>
-</div>
+    <div id="jqui" class="well">
+        <h4>jQuery UI</h4>
+        <button>Click Me!</button>
+    </div>
 </body>
 </html>
