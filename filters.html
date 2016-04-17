@@ -26,9 +26,14 @@
 
             $scope.selectItems = function (item) {
                 return item.category === "Fruit";
+            };
+
+            $scope.myCustomSorter = function (item) {
+                return item.expiry < 5 ? 0 : item.price;
             }
         });
     </script>
+    <script src="customFilters.js"></script>
 </head>
 <body ng-controller="defaultCtrl">
 <div class="panel panel-default">
@@ -52,9 +57,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="p in products | filter : selectItems">
-                <td>{{p.name}}</td>
-                <td>{{p.category}}</td>
+            <tr ng-repeat="p in products | take:3:5">
+                <td>{{p.name | labelCase}}</td>
+                <td>{{p.category | labelCase : true}}</td>
                 <td>{{p.expiry}}</td>
                 <td class="text-right">{{p.price | currency}}</td>
             </tr>
