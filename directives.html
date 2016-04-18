@@ -8,25 +8,12 @@
         angular.module("exampleApp", [])
                 .directive("unorderedList", function () {
                     return {
-                        link : function (scope, element, attrs) {
-                            var data = scope[attrs["unorderedList"] || attrs["listSource"]];
-                            var propertyExpression = attrs["listProperty"] || "price | currency";
-                            if (angular.isArray(data)) {
-                                var listElem = angular.element("<ul>");
-
-                                // Need to check this if applying directive as a comment
-                                if (element[0].nodeName == "#comment") {
-                                    element.parent().append(listElem);
-                                } else {
-                                    element.append(listElem);
-                                }
-                                for (var i = 0; i < data.length; i++) {
-                                    listElem.append(angular.element('<li>')
-                                            .text(scope.$eval(propertyExpression, data[i])));
-                                }
-                            }
+                        link: function (scope, element, attrs) {
+                            scope.data = scope[attrs["unorderedList"]];
                         },
-                        restrict : "EACM"
+                        restrict: "A",
+                        templateUrl: "tableTemplate.html",
+                        replace: true
                     }
                 })
                 .controller("defaultCtrl", function ($scope) {
@@ -44,8 +31,10 @@
     <div class="panel-heading">
         <h3>Products</h3>
     </div>
-    <unordered-list class="panel-body">
-        <unordered-list list-source="products" list-property="price | currency"></unordered-list>
+    <div class="panel-body">
+        <div unordered-list="products" class="table table-striped">
+            This is where the list will go
+        </div>
     </div>
 </div>
 </body>
