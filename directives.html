@@ -7,27 +7,27 @@
     <script>
         angular.module("exampleApp", [])
                 .directive("unorderedList", function () {
-                    return function (scope, element, attrs) {
-                        var data = scope[attrs["unorderedList"]];
-                        var propertyExpression = attrs["listProperty"];
-                        if (angular.isArray(data)) {
-                            var listElem = angular.element("<ul>");
-                            element.append(listElem);
-                            for (var i = 0; i < data.length; i++) {
-                                (function () {
-                                    var itemElement = angular.element('<li>');
-                                    listElem.append(itemElement);
-                                    var index = i;
-                                    var watcherFn = function (watchScope) {
-                                        return watchScope.$eval(propertyExpression, data[index]);
-                                    };
-                                    scope.$watch(watcherFn, function (newValue, oldValue) {
-                                        itemElement.text(newValue);
-                                    });
-                                }());
+                    return {
+                        link : function (scope, element, attrs) {
+                            var data = scope[attrs["unorderedList"] || attrs["listSource"]];
+                            var propertyExpression = attrs["listProperty"] || "price | currency";
+                            if (angular.isArray(data)) {
+                                var listElem = angular.element("<ul>");
+
+                                // Need to check this if applying directive as a comment
+                                if (element[0].nodeName == "#comment") {
+                                    element.parent().append(listElem);
+                                } else {
+                                    element.append(listElem);
+                                }
+                                for (var i = 0; i < data.length; i++) {
+                                    listElem.append(angular.element('<li>')
+                                            .text(scope.$eval(propertyExpression, data[i])));
+                                }
                             }
-                        }
-                    };
+                        },
+                        restrict : "EACM"
+                    }
                 })
                 .controller("defaultCtrl", function ($scope) {
                     $scope.products = [
@@ -36,11 +36,6 @@
                         {name: "Pears", category: "Fruit", price: 2.02, expiry: 6}
                     ];
 
-                    $scope.incrementPrices = function () {
-                        for (var i = 0; i < $scope.products.length; i++) {
-                            $scope.products[i].price++;
-                        }
-                    }
                 });
     </script>
 </head>
@@ -49,13 +44,8 @@
     <div class="panel-heading">
         <h3>Products</h3>
     </div>
-    <div class="panel-body">
-        <button class="btn btn-primary" ng-click="incrementPrices()">
-            Change Prices
-        </button>
-    </div>
-    <div class="panel-body">
-        <div unordered-list="products" list-property="price | currency"></div>
+    <unordered-list class="panel-body">
+        <unordered-list list-source="products" list-property="price | currency"></unordered-list>
     </div>
 </div>
 </body>
