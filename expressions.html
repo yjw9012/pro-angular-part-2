@@ -8,28 +8,21 @@
     <script>
         angular.module("exampleApp", [])
             .controller("defaultCtrl", function ($scope) {
-                $scope.dataValue = "100.23";
-            }).directive("evalExpression", function ($interpolate) {
-                const interpolationFn = $interpolate("The total is: {{amount | currency}} (including tax)");
-                return {
-                    scope: {
-                        amount: "=amount",
-                        tax: "=tax"
-                    },
-                    link: function (scope, element, attrs) {
-                        scope.$watch("amount", function (newValue) {
-                            var localData = {total: Number(newValue) + (Number(newValue) * (Number(scope.tax) / 100))};
-                            element.text(interpolationFn(scope));
-                        });
-                    }
+                $scope.cities = ["London", "Paris", "New York"];
+            }).directive("evalExpression", function ($compile) {
+                return function (scope, element, attrs) {
+                    var content = "<ul><li ng-repeat='city in cities'>{{city}}</li></ul>";
+                    var listElem = angular.element(content);
+                    var compileFn = $compile(listElem);
+                    compileFn(scope);
+                    element.append(listElem);
                 }
             });
     </script>
 </head>
 <body ng-controller="defaultCtrl">
-<div class="well">
-    <p><input class="form-control" ng-model="dataValue"/></p>
-    <div>Result: <span eval-expression amount="dataValue" tax="10"></span></div>
-</div>
+    <div class="well">
+        <span eval-expression></span>
+    </div>
 </body>
 </html>
