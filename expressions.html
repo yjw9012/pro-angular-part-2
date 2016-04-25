@@ -7,23 +7,23 @@
     <link href="bootstrap-theme.css" rel="stylesheet"/>
     <script>
         angular.module("exampleApp", [])
-                .controller("defaultCtrl", function ($scope) {
-                    $scope.price = "100.23";
-                }).directive("evalExpression", function ($parse) {
-            var expressionFn = $parse("total | currency");
-            return {
-                scope: {
-                    amount: "=amount",
-                    tax: "=tax"
-                },
-                link: function (scope, element, attrs) {
-                    scope.$watch("amount", function (newValue) {
-                        var localData = {total: Number(newValue) + (Number(newValue) * (Number(scope.tax) / 100))};
-                        element.text(expressionFn(scope, localData));
-                    });
+            .controller("defaultCtrl", function ($scope) {
+                $scope.dataValue = "100.23";
+            }).directive("evalExpression", function ($interpolate) {
+                const interpolationFn = $interpolate("The total is: {{amount | currency}} (including tax)");
+                return {
+                    scope: {
+                        amount: "=amount",
+                        tax: "=tax"
+                    },
+                    link: function (scope, element, attrs) {
+                        scope.$watch("amount", function (newValue) {
+                            var localData = {total: Number(newValue) + (Number(newValue) * (Number(scope.tax) / 100))};
+                            element.text(interpolationFn(scope));
+                        });
+                    }
                 }
-            }
-        });
+            });
     </script>
 </head>
 <body ng-controller="defaultCtrl">
