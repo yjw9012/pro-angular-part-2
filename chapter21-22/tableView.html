@@ -15,13 +15,13 @@
             <td class="text-right">{{item.price | currency}}</td>
             <td class="text-center">
                 <button class="btn btn-xs btn-primary" ng-click="deleteProduct(item)">Delete</button>
-                <button class="btn btn-xs btn-primary" ng-click="editOrCreateProduct(item)">Edit</button>
+                <a href="/edit/{{item.id}}" class="btn btn-xs btn-primary">Edit</a>
             </td>
         </tr>
         </tbody>
     </table>
     <div>
         <button class="btn btn-primary" ng-click="listProducts()">Refresh</button>
-        <button class="btn btn-primary" ng-click="editOrCreateProduct()">New</button>
+        <a class="btn btn-primary" href="/create">New</a>
     </div>
 </div>
